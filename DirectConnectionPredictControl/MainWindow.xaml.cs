@@ -126,6 +126,7 @@ namespace DirectConnectionPredictControl
             container_5 = new SliverDataContainer();
             container_6 = new MainDevDataContains();
             history = new HistoryModel();
+            Export("123");
             ClearMsg();
             testThread = new Thread(TestHandler);
             recordThread = new Thread(RecordHandler);
@@ -495,12 +496,7 @@ namespace DirectConnectionPredictControl
             uint canID = dTO.Id;
             canID = dTO.Id >> 21;
 
-            int location = getIndex(canID);
-            for (int i = 0; i < 8; i++)
-            {
-                oriData[location][i] = recvData[i];
-            }
-            oriData[location][8] = (byte)' ';
+            
 
             uint canIdHigh = (canID & 0xf0) >> 4;
             uint canIdLow = canID & 0x0f;
@@ -508,6 +504,12 @@ namespace DirectConnectionPredictControl
             if (type == FormatType.REAL_TIME)
             {
                 FormateRealTime(recvData, canIdHigh, canIdLow, FormatType.REAL_TIME, point);
+                int location = getIndex(canID);
+                for (int i = 0; i < 8; i++)
+                {
+                    oriData[location][i] = recvData[i];
+                }
+                oriData[location][8] = (byte)' ';
             }
             if (type == FormatType.HISTORY)
             {
@@ -3437,7 +3439,7 @@ namespace DirectConnectionPredictControl
 
 
 
-        
+
 
         /// <summary>
         /// 导出为excel 按钮事件
@@ -3446,43 +3448,25 @@ namespace DirectConnectionPredictControl
         /// <param name="e"></param>
         private void exportXls_Click(object sender, RoutedEventArgs e)
         {
+            //导出为xml
             txt_to_xml();
+            //string fileName;
+            //SaveFileDialog sfd = new SaveFileDialog();
+            //sfd.CheckFileExists = true;
+            //sfd.CheckPathExists = true;
+            //sfd.RestoreDirectory = true;
+            //if (sfd.ShowDialog() == System.Windows.Forms.DialogResult.OK)
+            //{
+            //    double x = 0.0;
+            //    fileName = sfd.FileName;
+            //}
         }
 
-
-        //private HistoryModel history_ForXml = new HistoryModel();
-        //public void OpenFile_ForXml(string FileName)
-        //{
-        //    double x = 0.0;
-        //    string fileName = FileName;
-        //    List<byte[]> content = FileBuilding.GetFileContent(fileName);
-        //    List<List<CanDTO>> canList = FileBuilding.GetCanList(content);
-        //    history_ForXml.FileLength = FileBuilding.FileLength;
-        //    for (int i = 0; i < canList.Count; i++)
-        //    {
-        //        int count = FileBuilding.CAN_MO_NUM;
-        //        history_ForXml.Count = canList.Count;
-        //        history_ForXml.X.Add(x);
-        //        x += 0.1;
-        //        for (int j = 0; j < canList[i].Count; j++)
-        //        {
-        //            if (--count == 0)
-        //            {
-        //                FormatData(canList[i][j], FormatType.HISTORY, FormatCommand.OK);
-        //            }
-        //            else
-        //            {
-        //                FormatData(canList[i][j], FormatType.HISTORY, FormatCommand.WAIT);
-        //            }
-
-        //        }
-        //        index += 0.1;
-        //    }
-        //    HistoryDetail historyDetail_ForXml = new HistoryDetail();
-        //    historyDetail_ForXml.SetHistory(history_ForXml);
-        //    //historyDetail_ForXml.Show();
-
-        //}
+        private void Export(string fileName)
+        {
+            IList<string> header = Utils.getXml("header.xml", "root");
+            
+        }
 
 
         public void OpenFile_1(string fileName)
